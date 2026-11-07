@@ -50,6 +50,13 @@ input { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(25
 .news-item .notes { margin-top: 8px; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.75); white-space: pre-wrap; }
 
 .foot { text-align: center; color: rgba(255,255,255,.3); font-size: 11px; margin-top: 60px; }
+textarea { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 11px; font-size: 14px; margin: 6px 0 10px; font-family: inherit; resize: vertical; }
+select { background: #0b0c10; color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 8px; font-size: 13px; }
+label { display: block; font-size: 12px; color: rgba(255,255,255,.5); letter-spacing: .5px; margin-top: 14px; }
+.small-btn { width: auto; padding: 8px 14px; font-size: 12px; }
+.list-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 14px; }
+.list-row .meta { color: rgba(255,255,255,.45); font-size: 12px; }
+.code-out { font-size: 36px; font-weight: 900; letter-spacing: 10px; text-align: center; margin: 16px 0 4px; color: #fff; font-family: Consolas, monospace; min-height: 44px; }
 </style>
 </head>
 <body>
@@ -62,6 +69,7 @@ input { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(25
     <a href="#faq" data-link="faq">FAQ</a>
     <a href="#news" data-link="news">Actualités</a>
     <a href="#account" data-link="account">Compte</a>
+    <a href="#admin" data-link="admin" id="nav-admin" class="hidden">Admin</a>
   </nav>
 </header>
 
@@ -142,6 +150,55 @@ input { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(25
     </div>
   </section>
 
+  <!-- ADMINISTRATION (owner / admin / dev) -->
+  <section class="page" id="page-admin">
+    <h1 class="page-title">Administration</h1>
+
+    <div class="card">
+      <h2>Contenu du site</h2>
+      <label for="c-accroche">Accroche (accueil)</label>
+      <textarea id="c-accroche" rows="2"></textarea>
+      <button class="btn small-btn" data-save="accroche">Enregistrer</button>
+
+      <label for="c-regles">Règles</label>
+      <textarea id="c-regles" rows="8"></textarea>
+      <button class="btn small-btn" data-save="regles">Enregistrer</button>
+
+      <label for="c-faq">FAQ</label>
+      <textarea id="c-faq" rows="8"></textarea>
+      <button class="btn small-btn" data-save="faq">Enregistrer</button>
+
+      <label for="c-discord_url">Lien Discord (https://…, laisser vide pour masquer le bouton)</label>
+      <input id="c-discord_url" placeholder="https://discord.gg/…">
+      <button class="btn small-btn" data-save="discord_url">Enregistrer</button>
+
+      <div class="err" id="a-content-err"></div>
+      <div class="ok" id="a-content-ok"></div>
+    </div>
+
+    <div class="card" id="codes-card">
+      <h2>Codes de liaison Minecraft</h2>
+      <p class="muted" style="margin-bottom:10px">Crée un code pour un pseudo. Le joueur le saisit dans son profil. Valable 15 minutes, une seule utilisation.</p>
+      <div class="row">
+        <input id="a-mc" placeholder="Pseudo Minecraft exact" maxlength="16">
+        <button class="btn" id="a-code-btn">Générer un code</button>
+      </div>
+      <div class="err" id="a-code-err"></div>
+      <div class="ok" id="a-code-ok"></div>
+      <div class="code-out" id="a-code-out"></div>
+
+      <h2 style="margin-top:22px">Codes actifs</h2>
+      <div id="a-codes"><p class="muted">Aucun code actif.</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Membres</h2>
+      <p class="muted" style="margin-bottom:10px" id="members-hint"></p>
+      <div id="a-members"></div>
+      <div class="err" id="a-members-err"></div>
+    </div>
+  </section>
+
   <p class="foot">Radiant · Serveur Minecraft</p>
 </main>
 
@@ -158,14 +215,19 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = (id) => document.getElementById(id);
 
 // ---------- Navigation par onglets (#home, #rules, ...) ----------
-const PAGES = ['home', 'rules', 'faq', 'news', 'account'];
+const PAGES = ['home', 'rules', 'faq', 'news', 'account', 'admin'];
+const STAFF = ['owner', 'admin', 'dev'];
+let currentRole = 'player';
+let currentUserId = null;
 function showPage() {
-  const name = PAGES.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  let name = PAGES.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  if (name === 'admin' && !STAFF.includes(currentRole)) name = 'home';
   PAGES.forEach((p) => {
     $('page-' + p).classList.toggle('active', p === name);
   });
   document.querySelectorAll('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.link === name));
   window.scrollTo(0, 0);
+  if (name === 'admin') loadAdmin();
 }
 window.addEventListener('hashchange', showPage);
 
@@ -237,19 +299,28 @@ function showMsg(id, text) { $(id).textContent = text || ''; }
 async function refreshAccount() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
+    currentRole = 'player';
+    currentUserId = null;
+    $('nav-admin').classList.add('hidden');
     $('acc-out').classList.remove('hidden');
     $('acc-in').classList.add('hidden');
+    showPage();
     return;
   }
+  currentUserId = session.user.id;
   $('acc-out').classList.add('hidden');
   $('acc-in').classList.remove('hidden');
 
-  const { data: profile, error } = await sb.from('profiles').select('display_name,role,mc_name').single();
+  const { data: profile, error } = await sb.from('profiles')
+    .select('display_name,role,mc_name').eq('id', session.user.id).single();
   if (error || !profile) {
     $('p-name').textContent = session.user.email || 'Compte';
     $('p-role').textContent = 'Profil en cours de création, réessaie dans un instant.';
+    showPage();
     return;
   }
+  currentRole = profile.role;
+  $('nav-admin').classList.toggle('hidden', !STAFF.includes(profile.role));
   $('p-name').textContent = profile.display_name;
   $('p-role').textContent = 'Rôle : ' + profile.role;
   if (profile.mc_name) {
@@ -259,6 +330,7 @@ async function refreshAccount() {
     $('p-mc').textContent = 'Aucun compte Minecraft lié.';
     $('link-box').classList.remove('hidden');
   }
+  showPage();
 }
 
 // Connexion Google / Microsoft (fenêtre de la fournisseur, puis retour sur le site)
@@ -305,6 +377,164 @@ $('btn-logout').addEventListener('click', async () => {
 });
 
 sb.auth.onAuthStateChange(() => refreshAccount());
+
+// ---------- Administration ----------
+const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url'];
+
+async function loadAdmin() {
+  // Seul le contenu et les membres sont chargés ici ; les codes dépendent du rôle
+  await loadAdminContent();
+  await loadMembers();
+  if (['owner', 'admin'].includes(currentRole)) {
+    $('codes-card').classList.remove('hidden');
+    await loadCodes();
+  } else {
+    $('codes-card').classList.add('hidden');
+  }
+  $('members-hint').textContent = currentRole === 'owner'
+    ? 'Tu peux changer le rôle de chaque membre.'
+    : 'Lecture seule. Seul le owner peut changer les rôles.';
+}
+
+async function loadAdminContent() {
+  const { data, error } = await sb.from('site_content').select('key,value');
+  if (error) return showMsg('a-content-err', error.message);
+  const c = Object.fromEntries(data.map((r) => [r.key, r.value]));
+  CONTENT_KEYS.forEach((k) => { $('c-' + k).value = c[k] || ''; });
+}
+
+async function saveContent(key) {
+  showMsg('a-content-err', ''); showMsg('a-content-ok', '');
+  const value = $('c-' + key).value.trim();
+  if (key === 'discord_url' && value && !value.startsWith('https://')) {
+    return showMsg('a-content-err', 'Le lien Discord doit commencer par https://');
+  }
+  const { error } = await sb.from('site_content').upsert({
+    key,
+    value,
+    updated_at: new Date().toISOString(),
+    updated_by: currentUserId
+  });
+  if (error) return showMsg('a-content-err', error.message);
+  showMsg('a-content-ok', 'Enregistré.');
+  loadContent();
+}
+
+document.querySelectorAll('[data-save]').forEach((b) => {
+  b.addEventListener('click', () => saveContent(b.dataset.save));
+});
+
+// Codes de liaison
+async function createCode() {
+  showMsg('a-code-err', ''); showMsg('a-code-ok', '');
+  const name = $('a-mc').value.trim();
+  if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return showMsg('a-code-err', 'Pseudo Minecraft invalide (3 à 16 caractères).');
+  const { data, error } = await sb.rpc('create_link_code', { p_mc_name: name });
+  if (error) return showMsg('a-code-err', error.message);
+  $('a-code-out').textContent = data;
+  showMsg('a-code-ok', 'Code pour ' + name + ' : valable 15 minutes.');
+  $('a-mc').value = '';
+  loadCodes();
+}
+
+async function loadCodes() {
+  const box = $('a-codes');
+  const { data, error } = await sb.from('link_codes')
+    .select('code,mc_name,expires_at')
+    .eq('used', false)
+    .gt('expires_at', new Date().toISOString())
+    .order('expires_at');
+  if (error) return showMsg('a-code-err', error.message);
+  box.replaceChildren();
+  if (!data.length) {
+    const p = document.createElement('p');
+    p.className = 'muted';
+    p.textContent = 'Aucun code actif.';
+    box.appendChild(p);
+    return;
+  }
+  data.forEach((c) => {
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    const left = document.createElement('div');
+    const code = document.createElement('strong');
+    code.textContent = c.code;
+    code.style.letterSpacing = '3px';
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = c.mc_name + ' · expire à ' + new Date(c.expires_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    left.append(code, meta);
+    const del = document.createElement('button');
+    del.className = 'btn secondary small-btn';
+    del.textContent = 'Supprimer';
+    del.addEventListener('click', async () => {
+      const { error: e2 } = await sb.from('link_codes').delete().eq('code', c.code);
+      if (e2) return showMsg('a-code-err', e2.message);
+      loadCodes();
+    });
+    row.append(left, del);
+    box.appendChild(row);
+  });
+}
+
+$('a-code-btn').addEventListener('click', createCode);
+
+// Membres
+async function loadMembers() {
+  const box = $('a-members');
+  const { data, error } = await sb.from('profiles')
+    .select('id,display_name,role,mc_name')
+    .order('display_name');
+  if (error) return showMsg('a-members-err', error.message);
+  box.replaceChildren();
+
+  data.forEach((m) => {
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    const left = document.createElement('div');
+    const name = document.createElement('strong');
+    name.textContent = m.display_name;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = (m.mc_name ? 'Minecraft : ' + m.mc_name : 'Aucun compte Minecraft lié');
+    left.append(name, meta);
+
+    const right = document.createElement('div');
+    right.style.display = 'flex';
+    right.style.gap = '8px';
+    right.style.alignItems = 'center';
+
+    if (currentRole === 'owner') {
+      const sel = document.createElement('select');
+      ['player', 'dev', 'admin', 'owner'].forEach((r) => {
+        const o = document.createElement('option');
+        o.value = r;
+        o.textContent = r;
+        if (r === m.role) o.selected = true;
+        sel.appendChild(o);
+      });
+      const apply = document.createElement('button');
+      apply.className = 'btn secondary small-btn';
+      apply.textContent = 'Appliquer';
+      apply.addEventListener('click', async () => {
+        if (sel.value === m.role) return;
+        if (!confirm('Changer le rôle de ' + m.display_name + ' en « ' + sel.value + ' » ?')) return;
+        const { error: e2 } = await sb.rpc('set_role', { p_user: m.id, p_role: sel.value });
+        if (e2) return showMsg('a-members-err', e2.message);
+        loadMembers();
+      });
+      right.append(sel, apply);
+    } else {
+      const r = document.createElement('span');
+      r.className = 'meta';
+      r.textContent = m.role;
+      right.appendChild(r);
+    }
+
+    row.append(left, right);
+    box.appendChild(row);
+  });
+}
 
 // ---------- Démarrage ----------
 showPage();
