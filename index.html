@@ -333,7 +333,7 @@ async function refreshAccount() {
   showPage();
 }
 
-// Connexion Google / Microsoft (fenêtre de la fournisseur, puis retour sur le site)
+// Connexion Google / Microsoft (fenêtre du fournisseur, puis retour sur le site)
 async function oauth(provider) {
   showMsg('auth-err', '');
   const { error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: SITE_URL } });
@@ -382,7 +382,6 @@ sb.auth.onAuthStateChange(() => refreshAccount());
 const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url'];
 
 async function loadAdmin() {
-  // Seul le contenu et les membres sont chargés ici ; les codes dépendent du rôle
   await loadAdminContent();
   await loadMembers();
   if (['owner', 'admin'].includes(currentRole)) {
