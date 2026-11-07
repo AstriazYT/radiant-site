@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radiant</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+body { background: #0b0c10; color: #fff; min-height: 100vh; }
+a { color: inherit; }
+.hidden { display: none !important; }
+
+header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,.07); background: #0f1014; position: sticky; top: 0; z-index: 10; }
+.brand { font-weight: 900; letter-spacing: 4px; font-size: 18px; background: linear-gradient(90deg,#ff4b2b,#ff416c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+nav { display: flex; gap: 4px; flex-wrap: wrap; }
+nav a { padding: 8px 12px; border-radius: 6px; font-size: 13px; color: rgba(255,255,255,.6); text-decoration: none; cursor: pointer; }
+nav a:hover { color: #fff; }
+nav a.active { color: #fff; background: rgba(255,65,108,.12); }
+
+main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+.page { display: none; }
+.page.active { display: block; }
+
+.hero { text-align: center; padding: 36px 0 24px; }
+.logo { font-size: 84px; font-weight: 900; line-height: 1; background: linear-gradient(135deg,#ff4b2b,#ff416c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero h1 { font-size: 26px; letter-spacing: 8px; text-transform: uppercase; margin-top: 8px; }
+.accroche { color: rgba(255,255,255,.65); font-size: 15px; margin: 14px auto 0; max-width: 560px; line-height: 1.6; white-space: pre-wrap; }
+
+.btn { display: inline-block; padding: 13px 26px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(90deg,#ff4b2b,#ff416c); color: #fff; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; font-size: 13px; text-decoration: none; box-shadow: 0 4px 20px rgba(255,65,108,.3); }
+.btn.secondary { background: none; border: 1px solid rgba(255,255,255,.18); box-shadow: none; letter-spacing: 0; text-transform: none; font-weight: 500; color: rgba(255,255,255,.85); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+
+.card { background: #15161c; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 24px; margin-top: 20px; }
+.card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,.45); margin-bottom: 12px; }
+.text { white-space: pre-wrap; line-height: 1.7; font-size: 14px; color: rgba(255,255,255,.8); }
+.muted { color: rgba(255,255,255,.45); font-size: 12px; }
+
+.page-title { font-size: 22px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+
+input { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 11px; font-size: 14px; margin-bottom: 10px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row input { margin: 0; flex: 1; min-width: 180px; }
+.err { color: #ff416c; font-size: 13px; margin-top: 8px; min-height: 18px; }
+.ok { color: #4caf50; font-size: 13px; margin-top: 8px; min-height: 18px; }
+
+.news-item { border-left: 3px solid #ff416c; padding: 4px 0 4px 14px; margin-bottom: 22px; }
+.news-item h3 { font-size: 16px; }
+.news-item .date { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 2px; }
+.news-item .notes { margin-top: 8px; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.75); white-space: pre-wrap; }
+
+.foot { text-align: center; color: rgba(255,255,255,.3); font-size: 11px; margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#home">RADIANT</a>
+  <nav id="nav">
+    <a href="#home" data-link="home" class="active">Accueil</a>
+    <a href="#rules" data-link="rules">Règles</a>
+    <a href="#faq" data-link="faq">FAQ</a>
+    <a href="#news" data-link="news">Actualités</a>
+    <a href="#account" data-link="account">Compte</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ACCUEIL -->
+  <section class="page" id="page-home">
+    <div class="hero">
+      <div class="logo">R</div>
+      <h1>Radiant</h1>
+      <p class="accroche" id="accroche"></p>
+      <div class="actions">
+        <a class="btn" id="btn-download" href="#news">Télécharger le launcher</a>
+        <a class="btn secondary hidden" id="btn-discord" href="#" target="_blank" rel="noopener">Rejoindre le Discord</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RÈGLES -->
+  <section class="page" id="page-rules">
+    <h1 class="page-title">Règles</h1>
+    <div class="card"><div class="text" id="rules"></div></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="page" id="page-faq">
+    <h1 class="page-title">FAQ</h1>
+    <div class="card"><div class="text" id="faq"></div></div>
+  </section>
+
+  <!-- ACTUALITÉS -->
+  <section class="page" id="page-news">
+    <h1 class="page-title">Actualités</h1>
+    <div class="card" id="news-list"><p class="muted">Chargement…</p></div>
+  </section>
+
+  <!-- COMPTE -->
+  <section class="page" id="page-account">
+    <h1 class="page-title">Compte</h1>
+
+    <div class="card" id="acc-out">
+      <h2>Connexion</h2>
+      <div class="actions" style="margin-top:0;justify-content:flex-start">
+        <button class="btn secondary" id="login-google">Google</button>
+        <button class="btn secondary" id="login-microsoft">Microsoft</button>
+      </div>
+      <p class="muted" style="margin:18px 0 10px">Ou avec un email :</p>
+      <input id="email" type="email" placeholder="Email" autocomplete="email">
+      <input id="password" type="password" placeholder="Mot de passe (8 caractères minimum)" autocomplete="current-password">
+      <div class="row">
+        <button class="btn" id="btn-signin">Se connecter</button>
+        <button class="btn secondary" id="btn-signup">Créer un compte</button>
+      </div>
+      <div class="err" id="auth-err"></div>
+      <div class="ok" id="auth-ok"></div>
+    </div>
+
+    <div class="card hidden" id="acc-in">
+      <h2>Profil</h2>
+      <p id="p-name" style="font-size:16px;font-weight:700"></p>
+      <p class="muted" id="p-role"></p>
+      <p style="margin-top:14px;font-size:14px" id="p-mc"></p>
+
+      <div id="link-box" style="margin-top:18px">
+        <h2>Lier mon compte Minecraft</h2>
+        <p class="muted" style="margin-bottom:10px">Demande un code à 6 chiffres à un admin, puis saisis-le ici.</p>
+        <div class="row">
+          <input id="link-code" inputmode="numeric" maxlength="6" placeholder="Code à 6 chiffres">
+          <button class="btn" id="btn-link">Lier</button>
+        </div>
+        <div class="err" id="link-err"></div>
+        <div class="ok" id="link-ok"></div>
+      </div>
+
+      <div class="actions" style="justify-content:flex-start;margin-top:22px">
+        <button class="btn secondary" id="btn-logout">Déconnexion</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Radiant · Serveur Minecraft</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// Clé publique (publishable) : faite pour être dans le navigateur.
+// Ne jamais mettre ici la clé service_role.
+const SUPABASE_URL = 'https://abmfgztstgubulgxjhbw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_qVtBkih0CJYHt3-KlfH5rg_fSTSb1_h';
+const REPO = 'AstriazYT/minecraft-rubis-launcher';
+const SITE_URL = location.origin + location.pathname;
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = (id) => document.getElementById(id);
+
+// ---------- Navigation par onglets (#home, #rules, ...) ----------
+const PAGES = ['home', 'rules', 'faq', 'news', 'account'];
+function showPage() {
+  const name = PAGES.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  PAGES.forEach((p) => {
+    $('page-' + p).classList.toggle('active', p === name);
+  });
+  document.querySelectorAll('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.link === name));
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', showPage);
+
+// ---------- Contenu éditable (table site_content) ----------
+async function loadContent() {
+  const { data, error } = await sb.from('site_content').select('key,value');
+  if (error || !data) return;
+  const c = Object.fromEntries(data.map((r) => [r.key, r.value]));
+  $('accroche').textContent = c.accroche || '';
+  $('rules').textContent = c.regles || 'Les règles arrivent bientôt.';
+  $('faq').textContent = c.faq || 'La FAQ arrive bientôt.';
+  if (c.discord_url && c.discord_url.startsWith('https://')) {
+    $('btn-discord').href = c.discord_url;
+    $('btn-discord').classList.remove('hidden');
+  }
+}
+
+// ---------- Actualités : notes des releases GitHub ----------
+async function loadNews() {
+  const box = $('news-list');
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=10`, {
+      headers: { Accept: 'application/vnd.github+json' }
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const releases = await r.json();
+    box.replaceChildren();
+    if (!releases.length) { box.textContent = 'Aucune actualité pour le moment.'; return; }
+
+    releases.forEach((rel) => {
+      const item = document.createElement('div');
+      item.className = 'news-item';
+      const h = document.createElement('h3');
+      h.textContent = rel.name || rel.tag_name;
+      const d = document.createElement('div');
+      d.className = 'date';
+      d.textContent = new Date(rel.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+      const n = document.createElement('div');
+      n.className = 'notes';
+      n.textContent = rel.body || '';
+      item.append(h, d, n);
+      box.appendChild(item);
+    });
+  } catch (e) {
+    box.textContent = 'Impossible de charger les actualités.';
+  }
+}
+
+// Bouton de téléchargement : lien direct vers l'installateur de la dernière release
+async function loadDownload() {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+      headers: { Accept: 'application/vnd.github+json' }
+    });
+    if (!r.ok) return;
+    const rel = await r.json();
+    const exe = (rel.assets || []).find((a) => /\.exe$/i.test(a.name));
+    if (exe) {
+      const b = $('btn-download');
+      b.href = exe.browser_download_url;
+      b.textContent = 'Télécharger ' + rel.tag_name;
+    }
+  } catch (e) { /* on garde le lien vers les actualités */ }
+}
+
+// ---------- Compte ----------
+function showMsg(id, text) { $(id).textContent = text || ''; }
+
+async function refreshAccount() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    $('acc-out').classList.remove('hidden');
+    $('acc-in').classList.add('hidden');
+    return;
+  }
+  $('acc-out').classList.add('hidden');
+  $('acc-in').classList.remove('hidden');
+
+  const { data: profile, error } = await sb.from('profiles').select('display_name,role,mc_name').single();
+  if (error || !profile) {
+    $('p-name').textContent = session.user.email || 'Compte';
+    $('p-role').textContent = 'Profil en cours de création, réessaie dans un instant.';
+    return;
+  }
+  $('p-name').textContent = profile.display_name;
+  $('p-role').textContent = 'Rôle : ' + profile.role;
+  if (profile.mc_name) {
+    $('p-mc').textContent = 'Compte Minecraft lié : ' + profile.mc_name;
+    $('link-box').classList.add('hidden');
+  } else {
+    $('p-mc').textContent = 'Aucun compte Minecraft lié.';
+    $('link-box').classList.remove('hidden');
+  }
+}
+
+// Connexion Google / Microsoft (fenêtre de la fournisseur, puis retour sur le site)
+async function oauth(provider) {
+  showMsg('auth-err', '');
+  const { error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: SITE_URL } });
+  if (error) showMsg('auth-err', error.message);
+}
+$('login-google').addEventListener('click', () => oauth('google'));
+$('login-microsoft').addEventListener('click', () => oauth('azure'));
+
+// Email : connexion et inscription
+$('btn-signin').addEventListener('click', async () => {
+  showMsg('auth-err', ''); showMsg('auth-ok', '');
+  const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
+  if (error) showMsg('auth-err', 'Identifiants incorrects.');
+});
+
+$('btn-signup').addEventListener('click', async () => {
+  showMsg('auth-err', ''); showMsg('auth-ok', '');
+  const email = $('email').value.trim();
+  const password = $('password').value;
+  if (password.length < 8) return showMsg('auth-err', 'Le mot de passe doit faire 8 caractères minimum.');
+  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: SITE_URL } });
+  if (error) return showMsg('auth-err', error.message);
+  showMsg('auth-ok', 'Compte créé. Vérifie ta boîte mail pour confirmer l\'adresse.');
+});
+
+// Liaison Minecraft : utilise le code donné par un admin
+$('btn-link').addEventListener('click', async () => {
+  showMsg('link-err', ''); showMsg('link-ok', '');
+  const code = $('link-code').value.trim();
+  if (!/^\d{6}$/.test(code)) return showMsg('link-err', 'Le code doit faire 6 chiffres.');
+  const { data, error } = await sb.rpc('redeem_link_code', { p_code: code });
+  if (error) return showMsg('link-err', error.message);
+  $('link-code').value = '';
+  showMsg('link-ok', 'Compte lié : ' + data);
+  refreshAccount();
+});
+
+$('btn-logout').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  refreshAccount();
+});
+
+sb.auth.onAuthStateChange(() => refreshAccount());
+
+// ---------- Démarrage ----------
+showPage();
+loadContent();
+loadNews();
+loadDownload();
+refreshAccount();
+</script>
+</body>
+</html>
