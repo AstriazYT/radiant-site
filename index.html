@@ -122,6 +122,17 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 .team-card { margin-top: 0; text-align: center; }
 .team-card .avatar { margin: 0 auto 12px; }
 
+.admin-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; padding: 48px 0 24px; }
+.admin-tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 5px; width: max-content; max-width: 100%; flex-wrap: wrap; }
+.admin-tab { height: 36px; padding: 0 16px; border-radius: 9px; border: none; background: transparent; color: var(--muted); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.admin-tab:hover { color: var(--text); }
+.admin-tab.active { background: rgba(255,255,255,.08); color: var(--text); }
+.apanel { margin-top: 18px; }
+.acard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+.acard-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.acard-head h2 { font-size: 17px; font-weight: 700; }
+.acard-foot { margin-top: 14px; display: flex; justify-content: flex-end; }
+
 .foot { border-top: 1px solid var(--border); margin-top: 64px; padding: 28px 0; text-align: center; color: var(--dim); font-size: 13px; }
 
 @media (max-width: 640px) {
@@ -291,58 +302,82 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 
   <!-- ADMINISTRATION (owner / admin / dev) -->
   <section class="page" id="page-admin">
-    <div class="page-head">
-      <h1 class="page-title">Administration</h1>
-      <p class="page-sub">Contenu du site, codes de liaison et membres.</p>
+    <div class="admin-head">
+      <div>
+        <h1 class="page-title">Administration</h1>
+        <p class="page-sub">Contenu du site, codes de liaison et membres.</p>
+      </div>
+      <span class="badge" id="admin-role"></span>
     </div>
 
-    <div class="card">
-      <div class="card-title">Contenu du site</div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-atab="content">Contenu</button>
+      <button class="admin-tab" data-atab="codes" id="tab-codes">Codes</button>
+      <button class="admin-tab" data-atab="members">Membres</button>
+    </div>
 
-      <label class="label" for="c-accroche">Accroche (accueil)</label>
-      <textarea class="field" id="c-accroche" rows="2"></textarea>
-      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="accroche">Enregistrer</button></div>
+    <!-- Onglet Contenu -->
+    <div class="apanel" data-apanel="content">
+      <div class="acard">
+        <div class="acard-head"><h2>Accueil</h2><span class="hint">Texte affiché en haut de la page d'accueil</span></div>
+        <textarea class="field" id="c-accroche" rows="2"></textarea>
+        <div class="acard-foot"><button class="btn btn-primary btn-sm" data-save="accroche">Enregistrer</button></div>
+      </div>
 
-      <label class="label" for="c-regles">Règles</label>
-      <textarea class="field" id="c-regles" rows="8"></textarea>
-      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="regles">Enregistrer</button></div>
+      <div class="acard">
+        <div class="acard-head"><h2>Équipe</h2><span class="hint">Une personne par ligne : Nom | Rôle</span></div>
+        <textarea class="field" id="c-equipe" rows="6" placeholder="Alex | Fondateur&#10;Sam | Modérateur"></textarea>
+        <div class="acard-foot"><button class="btn btn-primary btn-sm" data-save="equipe">Enregistrer</button></div>
+      </div>
 
-      <label class="label" for="c-faq">FAQ</label>
-      <textarea class="field" id="c-faq" rows="8"></textarea>
-      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="faq">Enregistrer</button></div>
+      <div class="acard">
+        <div class="acard-head"><h2>Règles</h2></div>
+        <textarea class="field" id="c-regles" rows="8"></textarea>
+        <div class="acard-foot"><button class="btn btn-primary btn-sm" data-save="regles">Enregistrer</button></div>
+      </div>
 
-      <label class="label" for="c-discord_url">Lien Discord (https://…, vide pour masquer le bouton)</label>
-      <input class="field" id="c-discord_url" placeholder="https://discord.gg/…">
-      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="discord_url">Enregistrer</button></div>
+      <div class="acard">
+        <div class="acard-head"><h2>FAQ</h2></div>
+        <textarea class="field" id="c-faq" rows="8"></textarea>
+        <div class="acard-foot"><button class="btn btn-primary btn-sm" data-save="faq">Enregistrer</button></div>
+      </div>
 
-      <label class="label" for="c-equipe">Équipe : une personne par ligne, au format « Nom | Rôle »</label>
-      <textarea class="field" id="c-equipe" rows="6" placeholder="Alex | Fondateur&#10;Sam | Modérateur"></textarea>
-      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="equipe">Enregistrer</button></div>
+      <div class="acard">
+        <div class="acard-head"><h2>Discord</h2><span class="hint">Laisse vide pour masquer le bouton</span></div>
+        <input class="field" id="c-discord_url" placeholder="https://discord.gg/…">
+        <div class="acard-foot"><button class="btn btn-primary btn-sm" data-save="discord_url">Enregistrer</button></div>
+      </div>
 
       <div class="msg msg-err" id="a-content-err"></div>
       <div class="msg msg-ok" id="a-content-ok"></div>
     </div>
 
-    <div class="card" id="codes-card">
-      <div class="card-title">Codes de liaison Minecraft</div>
-      <p class="hint" style="margin-bottom:14px">Crée un code pour un pseudo. Le joueur le saisit dans son profil. Valable 15 minutes, une seule utilisation.</p>
-      <div class="row">
-        <input class="field" id="a-mc" placeholder="Pseudo Minecraft exact" maxlength="16">
-        <button class="btn btn-primary" id="a-code-btn">Générer un code</button>
+    <!-- Onglet Codes (owner / admin) -->
+    <div class="apanel hidden" data-apanel="codes" id="codes-card">
+      <div class="acard">
+        <div class="acard-head"><h2>Générer un code</h2><span class="hint">Valable 15 minutes, usage unique</span></div>
+        <div class="row">
+          <input class="field" id="a-mc" placeholder="Pseudo Minecraft exact" maxlength="16">
+          <button class="btn btn-primary" id="a-code-btn">Générer</button>
+        </div>
+        <div class="msg msg-err" id="a-code-err"></div>
+        <div class="msg msg-ok" id="a-code-ok"></div>
+        <div class="code-out" id="a-code-out"></div>
       </div>
-      <div class="msg msg-err" id="a-code-err"></div>
-      <div class="msg msg-ok" id="a-code-ok"></div>
-      <div class="code-out" id="a-code-out"></div>
 
-      <div class="card-title" style="margin-top:26px">Codes actifs</div>
-      <div id="a-codes"><p class="hint">Aucun code actif.</p></div>
+      <div class="acard">
+        <div class="acard-head"><h2>Codes actifs</h2></div>
+        <div id="a-codes"><p class="hint">Aucun code actif.</p></div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">Membres</div>
-      <p class="hint" style="margin-bottom:6px" id="members-hint"></p>
-      <div id="a-members"></div>
-      <div class="msg msg-err" id="a-members-err"></div>
+    <!-- Onglet Membres -->
+    <div class="apanel hidden" data-apanel="members">
+      <div class="acard">
+        <div class="acard-head"><h2>Membres</h2><span class="hint" id="members-hint"></span></div>
+        <div id="a-members"></div>
+        <div class="msg msg-err" id="a-members-err"></div>
+      </div>
     </div>
   </section>
 
@@ -357,7 +392,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
       <a id="foot-discord" href="#" target="_blank" rel="noopener" class="hidden" style="color:var(--muted)">Discord</a>
     </span>
   </div>
-  <p style="margin-top:14px;font-size:12px">Radiant n'est affilié ni à Mojang Studios, ni à Microsoft.</p>
+  <p style="margin-top:14px;font-size:12px">Radiant n'est affilié ni à Palladium, ni à Fuzeiii, ni à Mojang Studios, ni à Microsoft.</p>
 </footer>
 
 <!-- POP-UP : CRÉER UN COMPTE (2 étapes) -->
@@ -755,12 +790,11 @@ const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url', 'equipe'];
 async function loadAdmin() {
   await loadAdminContent();
   await loadMembers();
-  if (['owner', 'admin'].includes(currentRole)) {
-    $('codes-card').classList.remove('hidden');
-    await loadCodes();
-  } else {
-    $('codes-card').classList.add('hidden');
-  }
+  const canCodes = ['owner', 'admin'].includes(currentRole);
+  $('tab-codes').classList.toggle('hidden', !canCodes);
+  if (canCodes) await loadCodes();
+  $('admin-role').textContent = currentRole;
+  $('admin-role').className = 'badge badge-' + currentRole;
   $('members-hint').textContent = currentRole === 'owner'
     ? 'Tu peux changer le rôle de chaque membre.'
     : 'Lecture seule. Seul le owner peut changer les rôles.';
@@ -792,6 +826,14 @@ async function saveContent(key) {
 
 document.querySelectorAll('[data-save]').forEach((b) => {
   b.addEventListener('click', () => saveContent(b.dataset.save));
+});
+
+// Onglets de l'espace Admin
+document.querySelectorAll('.admin-tab').forEach((t) => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab').forEach((x) => x.classList.toggle('active', x === t));
+    document.querySelectorAll('.apanel').forEach((p) => p.classList.toggle('hidden', p.dataset.apanel !== t.dataset.atab));
+  });
 });
 
 // Codes de liaison
