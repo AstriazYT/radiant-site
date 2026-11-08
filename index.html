@@ -318,7 +318,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
       <p class="hint" style="margin-top:6px">Entre le code à 6 chiffres envoyé à <strong id="v-email"></strong>.</p>
 
       <label class="label" for="s-code">Code de confirmation</label>
-      <input class="field code-input" id="s-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000">
+      <input class="field code-input" id="s-code" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="000000">
 
       <button class="btn btn-primary btn-block" id="s-verify">Valider mon compte</button>
 
@@ -569,7 +569,7 @@ $('s-submit').addEventListener('click', async () => {
 $('s-verify').addEventListener('click', async () => {
   showMsg('v-err', ''); showMsg('v-ok', '');
   const code = $('s-code').value.trim();
-  if (!/^\d{6}$/.test(code)) return showMsg('v-err', 'Le code doit faire 6 chiffres.');
+  if (!/^\d{6,8}$/.test(code)) return showMsg('v-err', 'Le code doit faire entre 6 et 8 chiffres.');
 
   const { error } = await sb.auth.verifyOtp({ email: pendingEmail, token: code, type: 'signup' });
   if (error) {
