@@ -3,74 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radiant</title>
+<title>Radiant Survie</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-body { background: #0b0c10; color: #fff; min-height: 100vh; }
+:root { --bg:#0b0c10; --surface:#13141a; --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14); --text:#f4f4f6; --muted:rgba(255,255,255,.6); --dim:rgba(255,255,255,.38); --a1:#ff4b2b; --a2:#ff416c; --ok:#34c759; --radius:14px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; -webkit-font-smoothing: antialiased; background-image: radial-gradient(900px 500px at 50% -180px, rgba(255,65,108,.14), transparent 70%); background-repeat: no-repeat; }
 a { color: inherit; }
 .hidden { display: none !important; }
 
-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,.07); background: #0f1014; position: sticky; top: 0; z-index: 10; }
-.brand { font-weight: 900; letter-spacing: 4px; font-size: 18px; background: linear-gradient(90deg,#ff4b2b,#ff416c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
-nav { display: flex; gap: 4px; flex-wrap: wrap; }
-nav a { padding: 8px 12px; border-radius: 6px; font-size: 13px; color: rgba(255,255,255,.6); text-decoration: none; cursor: pointer; }
-nav a:hover { color: #fff; }
-nav a.active { color: #fff; background: rgba(255,65,108,.12); }
+/* Barre de navigation */
+.topbar { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px); background: rgba(11,12,16,.82); border-bottom: 1px solid var(--border); }
+.topbar-inner { max-width: 1080px; margin: 0 auto; height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { font-weight: 900; letter-spacing: .32em; font-size: 15px; text-decoration: none; background: linear-gradient(90deg,var(--a1),var(--a2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.nav a { padding: 8px 14px; border-radius: 999px; font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s, background .15s; }
+.nav a:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.nav a.active { color: var(--text); background: rgba(255,255,255,.08); }
+.nav a.admin-link { color: #ff8fa6; }
 
-main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+main { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 .page { display: none; }
-.page.active { display: block; }
+.page.active { display: block; animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.page-head { padding: 48px 0 24px; }
+.page-title { font-size: 30px; font-weight: 800; letter-spacing: -.01em; }
+.page-sub { color: var(--muted); margin-top: 6px; font-size: 15px; }
 
-.hero { text-align: center; padding: 36px 0 24px; }
-.logo { font-size: 84px; font-weight: 900; line-height: 1; background: linear-gradient(135deg,#ff4b2b,#ff416c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero h1 { font-size: 26px; letter-spacing: 8px; text-transform: uppercase; margin-top: 8px; }
-.accroche { color: rgba(255,255,255,.65); font-size: 15px; margin: 14px auto 0; max-width: 560px; line-height: 1.6; white-space: pre-wrap; }
+/* Accueil */
+.hero { text-align: center; padding: 72px 0 40px; }
+.logo-mark { width: 96px; height: 96px; margin: 0 auto; border-radius: 26px; background: linear-gradient(135deg,var(--a1),var(--a2)); display: flex; align-items: center; justify-content: center; font-size: 56px; font-weight: 900; color: #fff; box-shadow: 0 20px 60px rgba(255,65,108,.35); }
+.hero h1 { font-size: 44px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-top: 26px; }
+.accroche { color: var(--muted); font-size: 17px; max-width: 560px; margin: 16px auto 0; white-space: pre-wrap; }
+.actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
 
-.btn { display: inline-block; padding: 13px 26px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(90deg,#ff4b2b,#ff416c); color: #fff; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; font-size: 13px; text-decoration: none; box-shadow: 0 4px 20px rgba(255,65,108,.3); }
-.btn.secondary { background: none; border: 1px solid rgba(255,255,255,.18); box-shadow: none; letter-spacing: 0; text-transform: none; font-weight: 500; color: rgba(255,255,255,.85); }
-.btn:disabled { opacity: .5; cursor: not-allowed; }
-.actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+/* Boutons */
+.btn { height: 46px; padding: 0 22px; border-radius: 12px; border: 1px solid transparent; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, box-shadow .15s, background .15s, border-color .15s; font-family: inherit; color: var(--text); background: transparent; }
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn-primary { background: linear-gradient(135deg,var(--a1),var(--a2)); color: #fff; box-shadow: 0 10px 30px rgba(255,65,108,.25); }
+.btn-primary:hover { box-shadow: 0 14px 36px rgba(255,65,108,.35); }
+.btn-ghost { border-color: var(--border2); background: rgba(255,255,255,.02); }
+.btn-ghost:hover { background: rgba(255,255,255,.06); }
+.btn-sm { height: 36px; padding: 0 14px; font-size: 13px; border-radius: 10px; }
+.btn-block { width: 100%; }
+.btn-danger { color: #ff8fa6; border-color: rgba(255,65,108,.35); }
 
-.card { background: #15161c; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 24px; margin-top: 20px; }
-.card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,.45); margin-bottom: 12px; }
-.text { white-space: pre-wrap; line-height: 1.7; font-size: 14px; color: rgba(255,255,255,.8); }
-.muted { color: rgba(255,255,255,.45); font-size: 12px; }
+/* Cartes et textes */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-top: 18px; }
+.card-title { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+.text { white-space: pre-wrap; font-size: 15px; color: var(--muted); line-height: 1.8; }
+.hint { color: var(--dim); font-size: 13px; }
 
-.page-title { font-size: 22px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+/* Champs */
+.field { width: 100%; height: 46px; background: var(--bg); border: 1px solid var(--border2); border-radius: 12px; padding: 0 14px; color: var(--text); font-size: 15px; font-family: inherit; outline: none; transition: border-color .15s, box-shadow .15s; }
+.field:focus { border-color: rgba(255,65,108,.6); box-shadow: 0 0 0 4px rgba(255,65,108,.14); }
+textarea.field { height: auto; min-height: 90px; padding: 12px 14px; line-height: 1.6; resize: vertical; }
+select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
+.label { display: block; font-size: 13px; color: var(--muted); margin: 16px 0 8px; font-weight: 500; }
+.row { display: flex; gap: 10px; align-items: center; }
+.row .field { flex: 1; }
+.msg { font-size: 13px; margin-top: 12px; min-height: 0; }
+.msg-err { color: #ff7a95; }
+.msg-ok { color: var(--ok); }
+.divider { display: flex; align-items: center; gap: 12px; margin: 22px 0; color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
-input { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 11px; font-size: 14px; margin-bottom: 10px; }
-.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.row input { margin: 0; flex: 1; min-width: 180px; }
-.err { color: #ff416c; font-size: 13px; margin-top: 8px; min-height: 18px; }
-.ok { color: #4caf50; font-size: 13px; margin-top: 8px; min-height: 18px; }
+/* Compte */
+.auth-card { max-width: 440px; margin: 24px auto 0; }
+.profile-head { display: flex; align-items: center; gap: 16px; }
+.avatar { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg,var(--a1),var(--a2)); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.name { font-size: 20px; font-weight: 700; }
+.badge { display: inline-flex; align-items: center; margin-top: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,.07); color: var(--muted); }
+.badge-owner { background: rgba(255,65,108,.15); color: #ff8fa6; }
+.badge-admin { background: rgba(255,159,10,.14); color: #ffbf57; }
+.badge-dev { background: rgba(52,199,89,.14); color: #6ee38a; }
+.status { display: flex; align-items: center; gap: 10px; padding: 16px 0; border-top: 1px solid var(--border); margin-top: 22px; font-size: 15px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); flex-shrink: 0; }
+.dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
 
-.news-item { border-left: 3px solid #ff416c; padding: 4px 0 4px 14px; margin-bottom: 22px; }
-.news-item h3 { font-size: 16px; }
-.news-item .date { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 2px; }
-.news-item .notes { margin-top: 8px; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.75); white-space: pre-wrap; }
+/* Actualités */
+.news-item { padding: 22px 0; border-top: 1px solid var(--border); }
+.news-item:first-child { border-top: none; padding-top: 0; }
+.news-item h3 { font-size: 17px; font-weight: 700; }
+.news-item .date { font-size: 13px; color: var(--dim); margin-top: 2px; }
+.news-item .notes { margin-top: 10px; font-size: 14px; color: var(--muted); white-space: pre-wrap; line-height: 1.7; }
 
-.foot { text-align: center; color: rgba(255,255,255,.3); font-size: 11px; margin-top: 60px; }
-textarea { width: 100%; background: #0b0c10; color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 11px; font-size: 14px; margin: 6px 0 10px; font-family: inherit; resize: vertical; }
-select { background: #0b0c10; color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 8px; font-size: 13px; }
-label { display: block; font-size: 12px; color: rgba(255,255,255,.5); letter-spacing: .5px; margin-top: 14px; }
-.small-btn { width: auto; padding: 8px 14px; font-size: 12px; }
-.list-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 14px; }
-.list-row .meta { color: rgba(255,255,255,.45); font-size: 12px; }
-.code-out { font-size: 36px; font-weight: 900; letter-spacing: 10px; text-align: center; margin: 16px 0 4px; color: #fff; font-family: Consolas, monospace; min-height: 44px; }
+/* Administration */
+.list-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px 0; border-top: 1px solid var(--border); }
+.list-row:first-child { border-top: none; padding-top: 0; }
+.list-row .meta { color: var(--dim); font-size: 13px; margin-top: 2px; }
+.list-row .controls { display: flex; gap: 8px; align-items: center; }
+.code-out { font-family: Consolas, 'Courier New', monospace; font-size: 40px; font-weight: 800; letter-spacing: .3em; text-align: center; padding: 18px; margin: 18px 0 6px; border: 1px dashed var(--border2); border-radius: 14px; min-height: 76px; }
+.code-out:empty { display: none; }
+.mono { font-family: Consolas, monospace; letter-spacing: .2em; font-weight: 700; }
+
+/* Fenêtre pop-up */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(5,6,10,.7); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; animation: fade .2s ease; }
+.modal { width: 100%; max-width: 440px; background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; padding: 28px; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.modal-head h3 { font-size: 20px; font-weight: 700; }
+.icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; line-height: 1; }
+.icon-btn:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.modal .btn-primary { margin-top: 22px; }
+
+.foot { border-top: 1px solid var(--border); margin-top: 64px; padding: 28px 0; text-align: center; color: var(--dim); font-size: 13px; }
+
+@media (max-width: 640px) {
+  .topbar-inner { flex-direction: column; height: auto; padding: 14px 16px; gap: 10px; }
+  .nav { justify-content: center; }
+  .hero h1 { font-size: 32px; }
+  .logo-mark { width: 80px; height: 80px; font-size: 46px; }
+  .page-title { font-size: 26px; }
+  .card { padding: 22px; }
+  main { padding: 0 16px; }
+  .code-out { font-size: 30px; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <a class="brand" href="#home">RADIANT</a>
-  <nav id="nav">
-    <a href="#home" data-link="home" class="active">Accueil</a>
-    <a href="#rules" data-link="rules">Règles</a>
-    <a href="#faq" data-link="faq">FAQ</a>
-    <a href="#news" data-link="news">Actualités</a>
-    <a href="#account" data-link="account">Compte</a>
-    <a href="#admin" data-link="admin" id="nav-admin" class="hidden">Admin</a>
-  </nav>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#home">RADIANT</a>
+    <nav class="nav" id="nav">
+      <a href="#home" data-link="home" class="active">Accueil</a>
+      <a href="#rules" data-link="rules">Règles</a>
+      <a href="#faq" data-link="faq">FAQ</a>
+      <a href="#news" data-link="news">Actualités</a>
+      <a href="#account" data-link="account">Compte</a>
+      <a href="#admin" data-link="admin" id="nav-admin" class="admin-link hidden">Admin</a>
+    </nav>
+  </div>
 </header>
 
 <main>
@@ -78,129 +142,174 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,.5); letter-spa
   <!-- ACCUEIL -->
   <section class="page" id="page-home">
     <div class="hero">
-      <div class="logo">R</div>
+      <div class="logo-mark">R</div>
       <h1>Radiant</h1>
       <p class="accroche" id="accroche"></p>
       <div class="actions">
-        <a class="btn" id="btn-download" href="#news">Télécharger le launcher</a>
-        <a class="btn secondary hidden" id="btn-discord" href="#" target="_blank" rel="noopener">Rejoindre le Discord</a>
+        <a class="btn btn-primary" id="btn-download" href="#news">Télécharger le launcher</a>
+        <a class="btn btn-ghost hidden" id="btn-discord" href="#" target="_blank" rel="noopener">Rejoindre le Discord</a>
       </div>
     </div>
   </section>
 
   <!-- RÈGLES -->
   <section class="page" id="page-rules">
-    <h1 class="page-title">Règles</h1>
+    <div class="page-head"><h1 class="page-title">Règles</h1></div>
     <div class="card"><div class="text" id="rules"></div></div>
   </section>
 
   <!-- FAQ -->
   <section class="page" id="page-faq">
-    <h1 class="page-title">FAQ</h1>
+    <div class="page-head"><h1 class="page-title">FAQ</h1></div>
     <div class="card"><div class="text" id="faq"></div></div>
   </section>
 
   <!-- ACTUALITÉS -->
   <section class="page" id="page-news">
-    <h1 class="page-title">Actualités</h1>
-    <div class="card" id="news-list"><p class="muted">Chargement…</p></div>
+    <div class="page-head">
+      <h1 class="page-title">Actualités</h1>
+      <p class="page-sub">Les dernières versions du launcher.</p>
+    </div>
+    <div class="card" id="news-list"><p class="hint">Chargement…</p></div>
   </section>
 
   <!-- COMPTE -->
   <section class="page" id="page-account">
-    <h1 class="page-title">Compte</h1>
+    <div class="page-head"><h1 class="page-title">Compte</h1></div>
 
-    <div class="card" id="acc-out">
-      <h2>Connexion</h2>
-      <div class="actions" style="margin-top:0;justify-content:flex-start">
-        <button class="btn secondary" id="login-google">Google</button>
-        <button class="btn secondary" id="login-microsoft">Microsoft</button>
-      </div>
-      <p class="muted" style="margin:18px 0 10px">Ou avec un email :</p>
-      <input id="email" type="email" placeholder="Email" autocomplete="email">
-      <input id="password" type="password" placeholder="Mot de passe (8 caractères minimum)" autocomplete="current-password">
-      <div class="row">
-        <button class="btn" id="btn-signin">Se connecter</button>
-        <button class="btn secondary" id="btn-signup">Créer un compte</button>
-      </div>
-      <div class="err" id="auth-err"></div>
-      <div class="ok" id="auth-ok"></div>
+    <div class="card auth-card" id="acc-out">
+      <div class="card-title">Connexion</div>
+      <button class="btn btn-ghost btn-block" id="login-google">Continuer avec Google</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" id="login-microsoft">Continuer avec Microsoft</button>
+
+      <div class="divider">ou</div>
+
+      <label class="label" for="email">Adresse email</label>
+      <input class="field" id="email" type="email" autocomplete="email" placeholder="vous@exemple.com">
+      <label class="label" for="password">Mot de passe</label>
+      <input class="field" id="password" type="password" autocomplete="current-password">
+      <button class="btn btn-primary btn-block" style="margin-top:20px" id="btn-signin">Se connecter</button>
+
+      <p class="hint" style="text-align:center;margin-top:18px">
+        Pas encore de compte ? <a href="#" id="open-signup" style="color:var(--text)">Créer un compte</a>
+      </p>
+      <div class="msg msg-err" id="auth-err"></div>
     </div>
 
     <div class="card hidden" id="acc-in">
-      <h2>Profil</h2>
-      <p id="p-name" style="font-size:16px;font-weight:700"></p>
-      <p class="muted" id="p-role"></p>
-      <p style="margin-top:14px;font-size:14px" id="p-mc"></p>
-
-      <div id="link-box" style="margin-top:18px">
-        <h2>Lier mon compte Minecraft</h2>
-        <p class="muted" style="margin-bottom:10px">Demande un code à 6 chiffres à un admin, puis saisis-le ici.</p>
-        <div class="row">
-          <input id="link-code" inputmode="numeric" maxlength="6" placeholder="Code à 6 chiffres">
-          <button class="btn" id="btn-link">Lier</button>
+      <div class="profile-head">
+        <div class="avatar" id="p-avatar">?</div>
+        <div>
+          <div class="name" id="p-name"></div>
+          <span class="badge" id="p-role"></span>
         </div>
-        <div class="err" id="link-err"></div>
-        <div class="ok" id="link-ok"></div>
       </div>
 
-      <div class="actions" style="justify-content:flex-start;margin-top:22px">
-        <button class="btn secondary" id="btn-logout">Déconnexion</button>
+      <div class="status">
+        <span class="dot" id="mc-dot"></span>
+        <span id="p-mc"></span>
+      </div>
+
+      <div id="link-box" class="hidden">
+        <div class="card-title" style="margin-top:14px">Lier mon compte Minecraft</div>
+        <p class="hint" style="margin-bottom:12px">Demande un code à 6 chiffres à un admin, puis saisis-le ci-dessous.</p>
+        <div class="row">
+          <input class="field" id="link-code" inputmode="numeric" maxlength="6" placeholder="000000">
+          <button class="btn btn-primary" id="btn-link">Lier</button>
+        </div>
+        <div class="msg msg-err" id="link-err"></div>
+        <div class="msg msg-ok" id="link-ok"></div>
+      </div>
+
+      <div style="margin-top:26px">
+        <button class="btn btn-ghost btn-sm" id="btn-logout">Se déconnecter</button>
       </div>
     </div>
   </section>
 
   <!-- ADMINISTRATION (owner / admin / dev) -->
   <section class="page" id="page-admin">
-    <h1 class="page-title">Administration</h1>
+    <div class="page-head">
+      <h1 class="page-title">Administration</h1>
+      <p class="page-sub">Contenu du site, codes de liaison et membres.</p>
+    </div>
 
     <div class="card">
-      <h2>Contenu du site</h2>
-      <label for="c-accroche">Accroche (accueil)</label>
-      <textarea id="c-accroche" rows="2"></textarea>
-      <button class="btn small-btn" data-save="accroche">Enregistrer</button>
+      <div class="card-title">Contenu du site</div>
 
-      <label for="c-regles">Règles</label>
-      <textarea id="c-regles" rows="8"></textarea>
-      <button class="btn small-btn" data-save="regles">Enregistrer</button>
+      <label class="label" for="c-accroche">Accroche (accueil)</label>
+      <textarea class="field" id="c-accroche" rows="2"></textarea>
+      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="accroche">Enregistrer</button></div>
 
-      <label for="c-faq">FAQ</label>
-      <textarea id="c-faq" rows="8"></textarea>
-      <button class="btn small-btn" data-save="faq">Enregistrer</button>
+      <label class="label" for="c-regles">Règles</label>
+      <textarea class="field" id="c-regles" rows="8"></textarea>
+      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="regles">Enregistrer</button></div>
 
-      <label for="c-discord_url">Lien Discord (https://…, laisser vide pour masquer le bouton)</label>
-      <input id="c-discord_url" placeholder="https://discord.gg/…">
-      <button class="btn small-btn" data-save="discord_url">Enregistrer</button>
+      <label class="label" for="c-faq">FAQ</label>
+      <textarea class="field" id="c-faq" rows="8"></textarea>
+      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="faq">Enregistrer</button></div>
 
-      <div class="err" id="a-content-err"></div>
-      <div class="ok" id="a-content-ok"></div>
+      <label class="label" for="c-discord_url">Lien Discord (https://…, vide pour masquer le bouton)</label>
+      <input class="field" id="c-discord_url" placeholder="https://discord.gg/…">
+      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="discord_url">Enregistrer</button></div>
+
+      <div class="msg msg-err" id="a-content-err"></div>
+      <div class="msg msg-ok" id="a-content-ok"></div>
     </div>
 
     <div class="card" id="codes-card">
-      <h2>Codes de liaison Minecraft</h2>
-      <p class="muted" style="margin-bottom:10px">Crée un code pour un pseudo. Le joueur le saisit dans son profil. Valable 15 minutes, une seule utilisation.</p>
+      <div class="card-title">Codes de liaison Minecraft</div>
+      <p class="hint" style="margin-bottom:14px">Crée un code pour un pseudo. Le joueur le saisit dans son profil. Valable 15 minutes, une seule utilisation.</p>
       <div class="row">
-        <input id="a-mc" placeholder="Pseudo Minecraft exact" maxlength="16">
-        <button class="btn" id="a-code-btn">Générer un code</button>
+        <input class="field" id="a-mc" placeholder="Pseudo Minecraft exact" maxlength="16">
+        <button class="btn btn-primary" id="a-code-btn">Générer un code</button>
       </div>
-      <div class="err" id="a-code-err"></div>
-      <div class="ok" id="a-code-ok"></div>
+      <div class="msg msg-err" id="a-code-err"></div>
+      <div class="msg msg-ok" id="a-code-ok"></div>
       <div class="code-out" id="a-code-out"></div>
 
-      <h2 style="margin-top:22px">Codes actifs</h2>
-      <div id="a-codes"><p class="muted">Aucun code actif.</p></div>
+      <div class="card-title" style="margin-top:26px">Codes actifs</div>
+      <div id="a-codes"><p class="hint">Aucun code actif.</p></div>
     </div>
 
     <div class="card">
-      <h2>Membres</h2>
-      <p class="muted" style="margin-bottom:10px" id="members-hint"></p>
+      <div class="card-title">Membres</div>
+      <p class="hint" style="margin-bottom:6px" id="members-hint"></p>
       <div id="a-members"></div>
-      <div class="err" id="a-members-err"></div>
+      <div class="msg msg-err" id="a-members-err"></div>
     </div>
   </section>
 
-  <p class="foot">Radiant · Serveur Minecraft</p>
 </main>
+
+<footer class="foot" style="max-width:1080px;margin-left:auto;margin-right:auto">Radiant · Serveur Minecraft</footer>
+
+<!-- POP-UP : CRÉER UN COMPTE -->
+<div class="modal-backdrop hidden" id="signup-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title">
+    <div class="modal-head">
+      <h3 id="signup-title">Créer un compte</h3>
+      <button class="icon-btn" id="signup-close" aria-label="Fermer">×</button>
+    </div>
+    <p class="hint">Un email de confirmation sera envoyé.</p>
+
+    <label class="label" for="s-name">Pseudo affiché</label>
+    <input class="field" id="s-name" maxlength="32" autocomplete="nickname">
+
+    <label class="label" for="s-email">Adresse email</label>
+    <input class="field" id="s-email" type="email" autocomplete="email">
+
+    <label class="label" for="s-pass">Mot de passe (8 caractères minimum)</label>
+    <input class="field" id="s-pass" type="password" autocomplete="new-password">
+
+    <label class="label" for="s-pass2">Confirmer le mot de passe</label>
+    <input class="field" id="s-pass2" type="password" autocomplete="new-password">
+
+    <button class="btn btn-primary btn-block" id="s-submit">Créer mon compte</button>
+    <div class="msg msg-err" id="s-err"></div>
+    <div class="msg msg-ok" id="s-ok"></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
@@ -213,18 +322,18 @@ const SITE_URL = location.origin + location.pathname;
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = (id) => document.getElementById(id);
+function showMsg(id, text) { $(id).textContent = text || ''; }
 
 // ---------- Navigation par onglets (#home, #rules, ...) ----------
 const PAGES = ['home', 'rules', 'faq', 'news', 'account', 'admin'];
 const STAFF = ['owner', 'admin', 'dev'];
 let currentRole = 'player';
 let currentUserId = null;
+
 function showPage() {
   let name = PAGES.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
   if (name === 'admin' && !STAFF.includes(currentRole)) name = 'home';
-  PAGES.forEach((p) => {
-    $('page-' + p).classList.toggle('active', p === name);
-  });
+  PAGES.forEach((p) => $('page-' + p).classList.toggle('active', p === name));
   document.querySelectorAll('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.link === name));
   window.scrollTo(0, 0);
   if (name === 'admin') loadAdmin();
@@ -294,8 +403,6 @@ async function loadDownload() {
 }
 
 // ---------- Compte ----------
-function showMsg(id, text) { $(id).textContent = text || ''; }
-
 async function refreshAccount() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
@@ -315,19 +422,25 @@ async function refreshAccount() {
     .select('display_name,role,mc_name').eq('id', session.user.id).single();
   if (error || !profile) {
     $('p-name').textContent = session.user.email || 'Compte';
-    $('p-role').textContent = 'Profil en cours de création, réessaie dans un instant.';
+    $('p-role').textContent = 'Profil en cours de création';
     showPage();
     return;
   }
+
   currentRole = profile.role;
   $('nav-admin').classList.toggle('hidden', !STAFF.includes(profile.role));
+  $('p-avatar').textContent = (profile.display_name || '?').trim().charAt(0).toUpperCase();
   $('p-name').textContent = profile.display_name;
-  $('p-role').textContent = 'Rôle : ' + profile.role;
+  $('p-role').textContent = profile.role;
+  $('p-role').className = 'badge badge-' + profile.role;
+
   if (profile.mc_name) {
     $('p-mc').textContent = 'Compte Minecraft lié : ' + profile.mc_name;
+    $('mc-dot').classList.add('on');
     $('link-box').classList.add('hidden');
   } else {
-    $('p-mc').textContent = 'Aucun compte Minecraft lié.';
+    $('p-mc').textContent = 'Aucun compte Minecraft lié';
+    $('mc-dot').classList.remove('on');
     $('link-box').classList.remove('hidden');
   }
   showPage();
@@ -342,21 +455,55 @@ async function oauth(provider) {
 $('login-google').addEventListener('click', () => oauth('google'));
 $('login-microsoft').addEventListener('click', () => oauth('azure'));
 
-// Email : connexion et inscription
+// Connexion par email
 $('btn-signin').addEventListener('click', async () => {
-  showMsg('auth-err', ''); showMsg('auth-ok', '');
-  const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
-  if (error) showMsg('auth-err', error.message.includes('not confirmed') ? 'Confirme ton adresse email (lien reçu par mail) avant de te connecter.' : 'Identifiants incorrects.');
+  showMsg('auth-err', '');
+  const { error } = await sb.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('password').value
+  });
+  if (error) {
+    const notConfirmed = (error.message || '').toLowerCase().includes('not confirmed');
+    showMsg('auth-err', notConfirmed
+      ? 'Confirme ton adresse email (lien reçu par mail) avant de te connecter.'
+      : 'Email ou mot de passe incorrect.');
+  } else {
+    $('password').value = '';
+  }
 });
 
-$('btn-signup').addEventListener('click', async () => {
-  showMsg('auth-err', ''); showMsg('auth-ok', '');
-  const email = $('email').value.trim();
-  const password = $('password').value;
-  if (password.length < 8) return showMsg('auth-err', 'Le mot de passe doit faire 8 caractères minimum.');
-  const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: SITE_URL } });
-  if (error) return showMsg('auth-err', error.message);
-  showMsg('auth-ok', 'Compte créé. Vérifie ta boîte mail pour confirmer l\'adresse.');
+// ---------- Pop-up : créer un compte ----------
+function openSignup() {
+  showMsg('s-err', ''); showMsg('s-ok', '');
+  $('signup-modal').classList.remove('hidden');
+  setTimeout(() => $('s-name').focus(), 50);
+}
+function closeSignup() { $('signup-modal').classList.add('hidden'); }
+
+$('open-signup').addEventListener('click', (e) => { e.preventDefault(); openSignup(); });
+$('signup-close').addEventListener('click', closeSignup);
+$('signup-modal').addEventListener('click', (e) => { if (e.target.id === 'signup-modal') closeSignup(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSignup(); });
+
+$('s-submit').addEventListener('click', async () => {
+  showMsg('s-err', ''); showMsg('s-ok', '');
+  const name = $('s-name').value.trim();
+  const email = $('s-email').value.trim();
+  const pass = $('s-pass').value;
+  const pass2 = $('s-pass2').value;
+
+  if (name.length < 2) return showMsg('s-err', 'Pseudo : 2 caractères minimum.');
+  if (!/^\S+@\S+\.\S+$/.test(email)) return showMsg('s-err', 'Adresse email invalide.');
+  if (pass.length < 8) return showMsg('s-err', 'Mot de passe : 8 caractères minimum.');
+  if (pass !== pass2) return showMsg('s-err', 'Les mots de passe ne correspondent pas.');
+
+  const { error } = await sb.auth.signUp({
+    email,
+    password: pass,
+    options: { data: { full_name: name }, emailRedirectTo: SITE_URL }
+  });
+  if (error) return showMsg('s-err', error.message);
+  showMsg('s-ok', 'Compte créé. Confirme ton adresse via le lien reçu par email, puis connecte-toi.');
 });
 
 // Liaison Minecraft : utilise le code donné par un admin
@@ -447,7 +594,7 @@ async function loadCodes() {
   box.replaceChildren();
   if (!data.length) {
     const p = document.createElement('p');
-    p.className = 'muted';
+    p.className = 'hint';
     p.textContent = 'Aucun code actif.';
     box.appendChild(p);
     return;
@@ -456,22 +603,26 @@ async function loadCodes() {
     const row = document.createElement('div');
     row.className = 'list-row';
     const left = document.createElement('div');
-    const code = document.createElement('strong');
+    const code = document.createElement('span');
+    code.className = 'mono';
     code.textContent = c.code;
-    code.style.letterSpacing = '3px';
     const meta = document.createElement('div');
     meta.className = 'meta';
     meta.textContent = c.mc_name + ' · expire à ' + new Date(c.expires_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     left.append(code, meta);
+
+    const controls = document.createElement('div');
+    controls.className = 'controls';
     const del = document.createElement('button');
-    del.className = 'btn secondary small-btn';
+    del.className = 'btn btn-ghost btn-sm btn-danger';
     del.textContent = 'Supprimer';
     del.addEventListener('click', async () => {
       const { error: e2 } = await sb.from('link_codes').delete().eq('code', c.code);
       if (e2) return showMsg('a-code-err', e2.message);
       loadCodes();
     });
-    row.append(left, del);
+    controls.appendChild(del);
+    row.append(left, controls);
     box.appendChild(row);
   });
 }
@@ -491,20 +642,20 @@ async function loadMembers() {
     const row = document.createElement('div');
     row.className = 'list-row';
     const left = document.createElement('div');
-    const name = document.createElement('strong');
+    const name = document.createElement('div');
+    name.style.fontWeight = '600';
     name.textContent = m.display_name;
     const meta = document.createElement('div');
     meta.className = 'meta';
-    meta.textContent = (m.mc_name ? 'Minecraft : ' + m.mc_name : 'Aucun compte Minecraft lié');
+    meta.textContent = m.mc_name ? 'Minecraft : ' + m.mc_name : 'Aucun compte Minecraft lié';
     left.append(name, meta);
 
-    const right = document.createElement('div');
-    right.style.display = 'flex';
-    right.style.gap = '8px';
-    right.style.alignItems = 'center';
+    const controls = document.createElement('div');
+    controls.className = 'controls';
 
     if (currentRole === 'owner') {
       const sel = document.createElement('select');
+      sel.className = 'field';
       ['player', 'dev', 'admin', 'owner'].forEach((r) => {
         const o = document.createElement('option');
         o.value = r;
@@ -513,7 +664,7 @@ async function loadMembers() {
         sel.appendChild(o);
       });
       const apply = document.createElement('button');
-      apply.className = 'btn secondary small-btn';
+      apply.className = 'btn btn-ghost btn-sm';
       apply.textContent = 'Appliquer';
       apply.addEventListener('click', async () => {
         if (sel.value === m.role) return;
@@ -522,15 +673,15 @@ async function loadMembers() {
         if (e2) return showMsg('a-members-err', e2.message);
         loadMembers();
       });
-      right.append(sel, apply);
+      controls.append(sel, apply);
     } else {
       const r = document.createElement('span');
-      r.className = 'meta';
+      r.className = 'badge badge-' + m.role;
       r.textContent = m.role;
-      right.appendChild(r);
+      controls.appendChild(r);
     }
 
-    row.append(left, right);
+    row.append(left, controls);
     box.appendChild(row);
   });
 }
