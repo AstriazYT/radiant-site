@@ -108,6 +108,20 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 .modal .btn-primary { margin-top: 22px; }
 .code-input { font-family: Consolas, monospace; font-size: 26px; letter-spacing: .4em; text-align: center; height: 58px; }
 
+.section-block { margin-top: 56px; }
+.section-title { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.feature { margin-top: 0; }
+.feature h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.feature p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.steps { display: grid; gap: 14px; }
+.step { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.step strong { font-size: 15px; }
+.step p { font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+.step-num { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg,var(--a1),var(--a2)); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.team-card { margin-top: 0; text-align: center; }
+.team-card .avatar { margin: 0 auto 12px; }
+
 .foot { border-top: 1px solid var(--border); margin-top: 64px; padding: 28px 0; text-align: center; color: var(--dim); font-size: 13px; }
 
 @media (max-width: 640px) {
@@ -118,6 +132,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
   .page-title { font-size: 26px; }
   .card { padding: 22px; }
   main { padding: 0 16px; }
+  .grid3 { grid-template-columns: 1fr; }
   .code-out { font-size: 30px; }
 }
 </style>
@@ -150,6 +165,52 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
         <a class="btn btn-primary" id="btn-download" href="#news">Télécharger le launcher</a>
         <a class="btn btn-ghost hidden" id="btn-discord" href="#" target="_blank" rel="noopener">Rejoindre le Discord</a>
       </div>
+    </div>
+    <div class="section-block">
+      <div class="section-title">Pourquoi Radiant</div>
+      <div class="grid3">
+        <div class="card feature">
+          <h3>Prêt en quelques clics</h3>
+          <p>Le launcher installe Java, Forge et les mods à ta place. Pas de configuration, pas de galère.</p>
+        </div>
+        <div class="card feature">
+          <h3>Des mods soigneusement choisis</h3>
+          <p>La liste est tenue à jour : à chaque lancement, tu as la bonne version, sans rien télécharger toi-même.</p>
+        </div>
+        <div class="card feature">
+          <h3>Un launcher qui se met à jour seul</h3>
+          <p>Les nouveautés arrivent sans réinstaller quoi que ce soit. Tu n'as jamais à chercher la dernière version.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-title">Comment rejoindre</div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">1</span>
+          <div><strong>Télécharge le launcher</strong><p>Le bouton en haut de cette page te donne la dernière version.</p></div>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <div><strong>Installe-le</strong><p>Lance l'installateur. Si Windows t'avertit, clique sur « Informations complémentaires », puis « Exécuter quand même ».</p></div>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <div><strong>Connecte-toi et joue</strong><p>Utilise le compte Microsoft qui possède Minecraft Java, puis appuie sur Jouer.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-title">Dernières actualités</div>
+      <div class="card" id="home-news"><p class="hint">Chargement…</p></div>
+      <p style="margin-top:14px"><a href="#news" style="color:var(--text);font-size:14px">Toutes les actualités →</a></p>
+    </div>
+
+    <div class="section-block">
+      <div class="section-title">L'équipe</div>
+      <div class="grid3" id="team"></div>
     </div>
   </section>
 
@@ -254,6 +315,10 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
       <input class="field" id="c-discord_url" placeholder="https://discord.gg/…">
       <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="discord_url">Enregistrer</button></div>
 
+      <label class="label" for="c-equipe">Équipe : une personne par ligne, au format « Nom | Rôle »</label>
+      <textarea class="field" id="c-equipe" rows="6" placeholder="Alex | Fondateur&#10;Sam | Modérateur"></textarea>
+      <div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-save="equipe">Enregistrer</button></div>
+
       <div class="msg msg-err" id="a-content-err"></div>
       <div class="msg msg-ok" id="a-content-ok"></div>
     </div>
@@ -283,7 +348,17 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 
 </main>
 
-<footer class="foot" style="max-width:1080px;margin-left:auto;margin-right:auto">Radiant · Serveur Minecraft</footer>
+<footer class="foot" style="max-width:1080px;margin-left:auto;margin-right:auto">
+  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center">
+    <span>Radiant · Serveur Minecraft</span>
+    <span>
+      <a href="#rules" style="color:var(--muted)">Règles</a> ·
+      <a href="#faq" style="color:var(--muted)">FAQ</a> ·
+      <a id="foot-discord" href="#" target="_blank" rel="noopener" class="hidden" style="color:var(--muted)">Discord</a>
+    </span>
+  </div>
+  <p style="margin-top:14px;font-size:12px">Radiant n'est affilié ni à Mojang Studios, ni à Microsoft.</p>
+</footer>
 
 <!-- POP-UP : CRÉER UN COMPTE (2 étapes) -->
 <div class="modal-backdrop hidden" id="signup-modal">
@@ -369,10 +444,67 @@ async function loadContent() {
   $('accroche').textContent = c.accroche || '';
   $('rules').textContent = c.regles || 'Les règles arrivent bientôt.';
   $('faq').textContent = c.faq || 'La FAQ arrive bientôt.';
+  renderTeam(c.equipe);
   if (c.discord_url && c.discord_url.startsWith('https://')) {
     $('btn-discord').href = c.discord_url;
     $('btn-discord').classList.remove('hidden');
+    $('foot-discord').href = c.discord_url;
+    $('foot-discord').classList.remove('hidden');
   }
+}
+
+// ---------- Accueil : aperçu des actualités ----------
+function renderHomeNews(releases) {
+  const box = $('home-news');
+  box.replaceChildren();
+  if (!releases.length) { box.textContent = 'Aucune actualité pour le moment.'; return; }
+  releases.slice(0, 3).forEach((rel) => {
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    const left = document.createElement('div');
+    const title = document.createElement('div');
+    title.style.fontWeight = '600';
+    title.textContent = rel.name || rel.tag_name;
+    const date = document.createElement('div');
+    date.className = 'meta';
+    date.textContent = new Date(rel.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    left.append(title, date);
+    row.appendChild(left);
+    box.appendChild(row);
+  });
+}
+
+// ---------- Accueil : section équipe (texte édité dans l'espace Admin) ----------
+function renderTeam(text) {
+  const box = $('team');
+  box.replaceChildren();
+  const lines = (text || '').split('\n').map((l) => l.trim()).filter(Boolean);
+  if (!lines.length) {
+    const p = document.createElement('p');
+    p.className = 'hint';
+    p.textContent = "L'équipe sera présentée bientôt.";
+    box.appendChild(p);
+    return;
+  }
+  lines.forEach((line) => {
+    const parts = line.split('|').map((s) => s.trim());
+    const name = parts[0] || '';
+    const role = parts[1] || '';
+    const card = document.createElement('div');
+    card.className = 'card team-card';
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.textContent = name.charAt(0).toUpperCase() || '?';
+    const n = document.createElement('div');
+    n.className = 'name';
+    n.style.fontSize = '16px';
+    n.textContent = name;
+    const r = document.createElement('div');
+    r.className = 'hint';
+    r.textContent = role;
+    card.append(av, n, r);
+    box.appendChild(card);
+  });
 }
 
 // ---------- Actualités : notes des releases GitHub ----------
@@ -384,6 +516,7 @@ async function loadNews() {
     });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const releases = await r.json();
+    renderHomeNews(releases);
     box.replaceChildren();
     if (!releases.length) { box.textContent = 'Aucune actualité pour le moment.'; return; }
 
@@ -617,7 +750,7 @@ $('btn-logout').addEventListener('click', async () => {
 sb.auth.onAuthStateChange(() => setTimeout(refreshAccount, 0));
 
 // ---------- Administration ----------
-const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url'];
+const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url', 'equipe'];
 
 async function loadAdmin() {
   await loadAdminContent();
