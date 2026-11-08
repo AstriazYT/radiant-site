@@ -346,7 +346,7 @@ $('login-microsoft').addEventListener('click', () => oauth('azure'));
 $('btn-signin').addEventListener('click', async () => {
   showMsg('auth-err', ''); showMsg('auth-ok', '');
   const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value });
-  if (error) showMsg('auth-err', 'Identifiants incorrects.');
+  if (error) showMsg('auth-err', error.message.includes('not confirmed') ? 'Confirme ton adresse email (lien reçu par mail) avant de te connecter.' : 'Identifiants incorrects.');
 });
 
 $('btn-signup').addEventListener('click', async () => {
@@ -376,7 +376,7 @@ $('btn-logout').addEventListener('click', async () => {
   refreshAccount();
 });
 
-sb.auth.onAuthStateChange(() => refreshAccount());
+sb.auth.onAuthStateChange(() => setTimeout(refreshAccount, 0));
 
 // ---------- Administration ----------
 const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url'];
