@@ -17,8 +17,8 @@ a { color: inherit; }
 .topbar-inner { max-width: 1080px; margin: 0 auto; height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .brand { font-weight: 900; letter-spacing: .32em; font-size: 15px; text-decoration: none; background: linear-gradient(90deg,var(--a1),var(--a2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.nav a { padding: 8px 14px; border-radius: 999px; font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s, background .15s; }
-.nav a:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.nav a { padding: 8px 14px; border-radius: 999px; font-size: 14px; color: var(--muted); text-decoration: none; transition: color .2s ease, background .2s ease, transform .15s ease; }
+.nav a:hover { color: var(--text); background: rgba(255,255,255,.05); transform: translateY(-1px); }
 .nav a.active { color: var(--text); background: rgba(255,255,255,.08); }
 .nav a.admin-link { color: #ff8fa6; }
 
@@ -37,20 +37,22 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 .accroche { color: var(--muted); font-size: 17px; max-width: 560px; margin: 16px auto 0; white-space: pre-wrap; }
 .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
 
-/* Boutons */
-.btn { height: 46px; padding: 0 22px; border-radius: 12px; border: 1px solid transparent; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, box-shadow .15s, background .15s, border-color .15s; font-family: inherit; color: var(--text); background: transparent; }
-.btn:hover { transform: translateY(-1px); }
+/* Boutons & Animations de survol */
+.btn { height: 46px; padding: 0 22px; border-radius: 12px; border: 1px solid transparent; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease; font-family: inherit; color: var(--text); background: transparent; }
+.btn:hover { transform: translateY(-2px) scale(1.02); }
 .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .btn-primary { background: linear-gradient(135deg,var(--a1),var(--a2)); color: #fff; box-shadow: 0 10px 30px rgba(255,65,108,.25); }
-.btn-primary:hover { box-shadow: 0 14px 36px rgba(255,65,108,.35); }
+.btn-primary:hover { box-shadow: 0 16px 40px rgba(255,65,108,.4); }
 .btn-ghost { border-color: var(--border2); background: rgba(255,255,255,.02); }
 .btn-ghost:hover { background: rgba(255,255,255,.06); }
 .btn-sm { height: 36px; padding: 0 14px; font-size: 13px; border-radius: 10px; }
 .btn-block { width: 100%; }
 .btn-danger { color: #ff8fa6; border-color: rgba(255,65,108,.35); }
 
-/* Cartes et textes */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-top: 18px; }
+/* Cartes, features, étapes et animations au survol */
+.card, .feature, .step, .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-top: 18px; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+.card:hover, .feature:hover, .step:hover, .team-card:hover { transform: translateY(-4px); border-color: rgba(255,65,108,0.35); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+
 .card-title { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
 .text { white-space: pre-wrap; font-size: 15px; color: var(--muted); line-height: 1.8; }
 .hint { color: var(--dim); font-size: 13px; }
@@ -115,7 +117,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 .feature h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
 .feature p { font-size: 14px; color: var(--muted); line-height: 1.7; }
 .steps { display: grid; gap: 14px; }
-.step { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.step { display: flex; gap: 16px; align-items: flex-start; }
 .step strong { font-size: 15px; }
 .step p { font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
 .step-num { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg,var(--a1),var(--a2)); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -128,7 +130,8 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 .admin-tab:hover { color: var(--text); }
 .admin-tab.active { background: rgba(255,255,255,.08); color: var(--text); }
 .apanel { margin-top: 18px; }
-.acard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+.acard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+.acard:hover { transform: translateY(-3px); border-color: rgba(255,65,108,0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.35); }
 .acard-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
 .acard-head h2 { font-size: 17px; font-weight: 700; }
 .acard-foot { margin-top: 14px; display: flex; justify-content: flex-end; }
@@ -300,7 +303,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
     </div>
   </section>
 
-  <!-- ADMINISTRATION (owner / admin / dev) -->
+  <!-- ADMINISTRATION -->
   <section class="page" id="page-admin">
     <div class="admin-head">
       <div>
@@ -352,7 +355,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
       <div class="msg msg-ok" id="a-content-ok"></div>
     </div>
 
-    <!-- Onglet Codes (owner / admin) -->
+    <!-- Onglet Codes -->
     <div class="apanel hidden" data-apanel="codes" id="codes-card">
       <div class="acard">
         <div class="acard-head"><h2>Générer un code</h2><span class="hint">Valable 15 minutes, usage unique</span></div>
@@ -395,7 +398,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
   <p style="margin-top:14px;font-size:12px">Radiant n'est affilié ni à Mojang Studios, ni à Microsoft.</p>
 </footer>
 
-<!-- POP-UP : CRÉER UN COMPTE (2 étapes) -->
+<!-- POP-UP : CRÉER UN COMPTE -->
 <div class="modal-backdrop hidden" id="signup-modal">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title">
     <div class="modal-head">
@@ -403,35 +406,25 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
       <button class="icon-btn" id="signup-close" aria-label="Fermer">×</button>
     </div>
 
-    <!-- Étape 1 : informations -->
     <div id="s-step1">
       <p class="hint">Un code de confirmation sera envoyé par email.</p>
-
       <label class="label" for="s-name">Pseudo affiché</label>
       <input class="field" id="s-name" maxlength="32" autocomplete="nickname">
-
       <label class="label" for="s-email">Adresse email</label>
       <input class="field" id="s-email" type="email" autocomplete="email">
-
       <label class="label" for="s-pass">Mot de passe (8 caractères minimum)</label>
       <input class="field" id="s-pass" type="password" autocomplete="new-password">
-
       <label class="label" for="s-pass2">Confirmer le mot de passe</label>
       <input class="field" id="s-pass2" type="password" autocomplete="new-password">
-
       <button class="btn btn-primary btn-block" id="s-submit">Créer mon compte</button>
       <div class="msg msg-err" id="s-err"></div>
     </div>
 
-    <!-- Étape 2 : code reçu par email -->
     <div id="s-step2" class="hidden">
       <p class="hint" style="margin-top:6px">Entre le code à 6 chiffres envoyé à <strong id="v-email"></strong>.</p>
-
       <label class="label" for="s-code">Code de confirmation</label>
       <input class="field code-input" id="s-code" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="000000">
-
       <button class="btn btn-primary btn-block" id="s-verify">Valider mon compte</button>
-
       <div class="row" style="justify-content:space-between;margin-top:14px">
         <button class="btn btn-ghost btn-sm" id="s-resend">Renvoyer le code</button>
         <button class="btn btn-ghost btn-sm" id="s-back">Modifier l'email</button>
@@ -444,8 +437,6 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
-// Clé publique (publishable) : faite pour être dans le navigateur.
-// Ne jamais mettre ici la clé service_role.
 const SUPABASE_URL = 'https://abmfgztstgubulgxjhbw.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_qVtBkih0CJYHt3-KlfH5rg_fSTSb1_h';
 const REPO = 'AstriazYT/minecraft-rubis-launcher';
@@ -455,7 +446,6 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = (id) => document.getElementById(id);
 function showMsg(id, text) { $(id).textContent = text || ''; }
 
-// ---------- Navigation par onglets (#home, #rules, ...) ----------
 const PAGES = ['home', 'rules', 'faq', 'news', 'account', 'admin'];
 const STAFF = ['owner', 'admin', 'dev'];
 let currentRole = 'player';
@@ -471,7 +461,6 @@ function showPage() {
 }
 window.addEventListener('hashchange', showPage);
 
-// ---------- Contenu éditable (table site_content) ----------
 async function loadContent() {
   const { data, error } = await sb.from('site_content').select('key,value');
   if (error || !data) return;
@@ -488,7 +477,6 @@ async function loadContent() {
   }
 }
 
-// ---------- Accueil : aperçu des actualités ----------
 function renderHomeNews(releases) {
   const box = $('home-news');
   box.replaceChildren();
@@ -509,7 +497,6 @@ function renderHomeNews(releases) {
   });
 }
 
-// ---------- Accueil : section équipe (texte édité dans l'espace Admin) ----------
 function renderTeam(text) {
   const box = $('team');
   box.replaceChildren();
@@ -542,7 +529,6 @@ function renderTeam(text) {
   });
 }
 
-// ---------- Actualités : notes des releases GitHub ----------
 async function loadNews() {
   const box = $('news-list');
   try {
@@ -574,7 +560,6 @@ async function loadNews() {
   }
 }
 
-// Bouton de téléchargement : lien direct vers l'installateur de la dernière release
 async function loadDownload() {
   try {
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
@@ -588,10 +573,9 @@ async function loadDownload() {
       b.href = exe.browser_download_url;
       b.textContent = 'Télécharger ' + rel.tag_name;
     }
-  } catch (e) { /* on garde le lien vers les actualités */ }
+  } catch (e) {}
 }
 
-// ---------- Compte ----------
 async function refreshAccount() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
@@ -635,7 +619,6 @@ async function refreshAccount() {
   showPage();
 }
 
-// Connexion Google / Microsoft (fenêtre du fournisseur, puis retour sur le site)
 async function oauth(provider) {
   showMsg('auth-err', '');
   const { error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: SITE_URL } });
@@ -644,7 +627,6 @@ async function oauth(provider) {
 $('login-google').addEventListener('click', () => oauth('google'));
 $('login-microsoft').addEventListener('click', () => oauth('azure'));
 
-// Connexion par email
 $('btn-signin').addEventListener('click', async () => {
   showMsg('auth-err', '');
   const { error } = await sb.auth.signInWithPassword({
@@ -654,14 +636,13 @@ $('btn-signin').addEventListener('click', async () => {
   if (error) {
     const notConfirmed = (error.message || '').toLowerCase().includes('not confirmed');
     showMsg('auth-err', notConfirmed
-      ? 'Confirme ton adresse email (lien reçu par mail) avant de te connecter.'
+      ? 'Confirme ton adresse email avant de te connecter.'
       : 'Email ou mot de passe incorrect.');
   } else {
     $('password').value = '';
   }
 });
 
-// ---------- Pop-up : créer un compte (inscription + code par email) ----------
 let pendingEmail = '';
 let resendTimer = null;
 
@@ -703,7 +684,6 @@ $('signup-close').addEventListener('click', closeSignup);
 $('signup-modal').addEventListener('click', (e) => { if (e.target.id === 'signup-modal') closeSignup(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSignup(); });
 
-// Étape 1 : création du compte, Supabase envoie le code par email
 $('s-submit').addEventListener('click', async () => {
   showMsg('s-err', '');
   const name = $('s-name').value.trim();
@@ -733,7 +713,6 @@ $('s-submit').addEventListener('click', async () => {
   setTimeout(() => $('s-code').focus(), 50);
 });
 
-// Étape 2 : validation du code
 $('s-verify').addEventListener('click', async () => {
   showMsg('v-err', ''); showMsg('v-ok', '');
   const code = $('s-code').value.trim();
@@ -742,14 +721,12 @@ $('s-verify').addEventListener('click', async () => {
   const { error } = await sb.auth.verifyOtp({ email: pendingEmail, token: code, type: 'signup' });
   if (error) {
     const expired = (error.message || '').toLowerCase().includes('expired');
-    return showMsg('v-err', expired ? 'Code expiré : demande un nouveau code.' : 'Code incorrect.');
+    return showMsg('v-err', expired ? 'Code expiré.' : 'Code incorrect.');
   }
-  // Compte confirmé et connecté : la pop-up se ferme, la page se met à jour
   closeSignup();
   showStep(1);
 });
 
-// Renvoi du code
 $('s-resend').addEventListener('click', async () => {
   showMsg('v-err', ''); showMsg('v-ok', '');
   const { error } = await sb.auth.resend({ type: 'signup', email: pendingEmail });
@@ -758,14 +735,12 @@ $('s-resend').addEventListener('click', async () => {
   startResendCooldown();
 });
 
-// Retour pour corriger l'adresse email
 $('s-back').addEventListener('click', () => {
   clearInterval(resendTimer);
   showMsg('v-err', ''); showMsg('v-ok', '');
   showStep(1);
 });
 
-// Liaison Minecraft : utilise le code donné par un admin
 $('btn-link').addEventListener('click', async () => {
   showMsg('link-err', ''); showMsg('link-ok', '');
   const code = $('link-code').value.trim();
@@ -784,7 +759,6 @@ $('btn-logout').addEventListener('click', async () => {
 
 sb.auth.onAuthStateChange(() => setTimeout(refreshAccount, 0));
 
-// ---------- Administration ----------
 const CONTENT_KEYS = ['accroche', 'regles', 'faq', 'discord_url', 'equipe'];
 
 async function loadAdmin() {
@@ -797,7 +771,7 @@ async function loadAdmin() {
   $('admin-role').className = 'badge badge-' + currentRole;
   $('members-hint').textContent = currentRole === 'owner'
     ? 'Tu peux changer le rôle de chaque membre.'
-    : 'Lecture seule. Seul le owner peut changer les rôles.';
+    : 'Lecture seule.';
 }
 
 async function loadAdminContent() {
@@ -828,7 +802,6 @@ document.querySelectorAll('[data-save]').forEach((b) => {
   b.addEventListener('click', () => saveContent(b.dataset.save));
 });
 
-// Onglets de l'espace Admin
 document.querySelectorAll('.admin-tab').forEach((t) => {
   t.addEventListener('click', () => {
     document.querySelectorAll('.admin-tab').forEach((x) => x.classList.toggle('active', x === t));
@@ -836,15 +809,14 @@ document.querySelectorAll('.admin-tab').forEach((t) => {
   });
 });
 
-// Codes de liaison
 async function createCode() {
   showMsg('a-code-err', ''); showMsg('a-code-ok', '');
   const name = $('a-mc').value.trim();
-  if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return showMsg('a-code-err', 'Pseudo Minecraft invalide (3 à 16 caractères).');
+  if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return showMsg('a-code-err', 'Pseudo Minecraft invalide.');
   const { data, error } = await sb.rpc('create_link_code', { p_mc_name: name });
   if (error) return showMsg('a-code-err', error.message);
   $('a-code-out').textContent = data;
-  showMsg('a-code-ok', 'Code pour ' + name + ' : valable 15 minutes.');
+  showMsg('a-code-ok', 'Code généré : valable 15 minutes.');
   $('a-mc').value = '';
   loadCodes();
 }
@@ -895,7 +867,6 @@ async function loadCodes() {
 
 $('a-code-btn').addEventListener('click', createCode);
 
-// Membres
 async function loadMembers() {
   const box = $('a-members');
   const { data, error } = await sb.from('profiles')
@@ -952,7 +923,6 @@ async function loadMembers() {
   });
 }
 
-// ---------- Démarrage ----------
 showPage();
 loadContent();
 loadNews();
