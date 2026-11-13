@@ -16,11 +16,25 @@ a { color: inherit; }
 .topbar { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px); background: rgba(11,12,16,.82); border-bottom: 1px solid var(--border); }
 .topbar-inner { max-width: 1080px; margin: 0 auto; height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .brand { font-weight: 900; letter-spacing: .32em; font-size: 15px; text-decoration: none; background: linear-gradient(90deg,var(--a1),var(--a2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.nav a { padding: 8px 14px; border-radius: 999px; font-size: 14px; color: var(--muted); text-decoration: none; transition: color .2s ease, background .2s ease, transform .15s ease; }
-.nav a:hover { color: var(--text); background: rgba(255,255,255,.05); transform: translateY(-1px); }
-.nav a.active { color: var(--text); background: rgba(255,255,255,.08); }
+.nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; position: relative; }
+.nav a { padding: 8px 14px; border-radius: 999px; font-size: 14px; color: var(--muted); text-decoration: none; transition: color .2s ease; z-index: 2; position: relative; }
+.nav a:hover { color: var(--text); }
+.nav a.active { color: #ff8fa6; font-weight: 600; }
 .nav a.admin-link { color: #ff8fa6; }
+
+/* Curseur coulissant (Pill) */
+.nav-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  background: rgba(255, 65, 108, 0.2);
+  border-radius: 16px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
 
 main { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 .page { display: none; }
@@ -138,23 +152,27 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
 
 .foot { border-top: 1px solid var(--border); margin-top: 64px; padding: 28px 0; text-align: center; color: var(--dim); font-size: 13px; }
 
-/* Adaptation Mobile : Barre en bas de l'écran & Support Safe Area iPhone */
+/* Style Mobile : Barre flottante de type App (Glassmorphism) */
 @media (max-width: 640px) {
   .topbar {
     position: fixed;
     top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-top: 1px solid var(--border);
-    border-bottom: none;
-    background: rgba(11,12,16,0.92);
-    backdrop-filter: blur(16px);
-    padding-bottom: env(safe-area-inset-bottom);
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    background: rgba(20, 21, 28, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    padding: 6px 8px;
   }
   .topbar-inner {
-    height: 60px;
-    padding: 0 10px;
+    height: 52px;
+    padding: 0;
     justify-content: center;
   }
   .brand {
@@ -163,17 +181,18 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
   .nav {
     width: 100%;
     justify-content: space-around;
-    gap: 2px;
+    gap: 4px;
   }
   .nav a {
-    font-size: 12px;
-    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 4px;
     flex: 1;
     text-align: center;
-    border-radius: 8px;
+    border-radius: 16px;
   }
   main {
-    padding-bottom: 80px;
+    padding-bottom: 90px;
   }
 }
 </style>
@@ -184,6 +203,7 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
   <div class="topbar-inner">
     <a class="brand" href="#home">RADIANT</a>
     <nav class="nav" id="nav">
+      <div class="nav-pill" id="nav-pill"></div>
       <a href="#home" data-link="home" class="active">Accueil</a>
       <a href="#rules" data-link="rules">Règles</a>
       <a href="#faq" data-link="faq">FAQ</a>
@@ -478,17 +498,44 @@ const STAFF = ['owner', 'admin', 'dev'];
 let currentRole = 'player';
 let currentUserId = null;
 
+function updateNavPill() {
+  const activeLink = document.querySelector('#nav a.active');
+  const pill = $('nav-pill');
+  const nav = $('nav');
+  if (!activeLink || !pill || !nav) return;
+  const navRect = nav.getBoundingClientRect();
+  const linkRect = activeLink.getBoundingClientRect();
+  const offsetLeft = linkRect.left - navRect.left;
+  pill.style.width = linkRect.width + 'px';
+  pill.style.transform = `translateX(${offsetLeft}px)`;
+}
+
 function showPage() {
   let name = PAGES.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
   if (name === 'admin' && !STAFF.includes(currentRole)) name = 'home';
   PAGES.forEach((p) => $('page-' + p).classList.toggle('active', p === name));
   document.querySelectorAll('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.link === name));
   window.scrollTo(0, 0);
+  updateNavPill();
   if (name === 'admin') loadAdmin();
 }
 window.addEventListener('hashchange', showPage);
+window.addEventListener('resize', updateNavPill);
 
-// --- Navigation tactile (Swipe horizontal sur mobile) ---
+// --- Suivi tactile direct sur la barre de navigation (Glisser pour changer de page) ---
+const navEl = $('nav');
+navEl.addEventListener('touchmove', (e) => {
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (target && target.tagName === 'A' && target.dataset.link) {
+    const linkName = target.dataset.link;
+    if (location.hash.slice(1) !== linkName) {
+      location.hash = '#' + linkName;
+    }
+  }
+}, { passive: true });
+
+// --- Navigation tactile globale (Swipe sur l'écran) ---
 let touchStartX = 0;
 let touchEndX = 0;
 const minSwipeDistance = 50;
