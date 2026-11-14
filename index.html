@@ -169,11 +169,11 @@ select.field { height: 40px; width: auto; padding: 0 12px; font-size: 14px; }
     border-radius: 26px;
     background: rgba(255,255,255,.2);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 6px 16px rgba(0,0,0,.3);
-    transform: translateX(calc(var(--i, 0) * 100%));
-    transition: transform .42s cubic-bezier(.3,.7,.2,1), background .2s ease;
+    will-change: transform;
+    transition: top .25s ease, bottom .25s ease, background .2s ease;
     pointer-events: none; z-index: 1;
   }
-  .nav-pill.pressed { background: rgba(255,255,255,.3); }
+  .nav-pill.pressed { background: rgba(255,255,255,.3); top: 2px; bottom: 2px; }
   main { padding-bottom: 130px; }
 }
 
@@ -527,9 +527,44 @@ function activeIndex() {
   return i < 0 ? 0 : i;
 }
 
+// Animation à ressort : la bulle dépasse un peu sa cible puis se stabilise, et s'étire selon sa vitesse
+let pillX = 0, pillV = 0, pillTarget = 0, pillRaf = null, pillLastT = 0;
+const SPRING_K = 280;   // raideur (vitesse de réaction)
+const SPRING_C = 22;    // amortissement (rebond)
+
+function animatePill(t) {
+  const dt = Math.min((t - pillLastT) / 1000, 1 / 30) || 1 / 60;
+  pillLastT = t;
+  const force = -SPRING_K * (pillX - pillTarget) - SPRING_C * pillV;
+  pillV += force * dt;
+  pillX += pillV * dt;
+
+  const speed = Math.abs(pillV);
+  const stretch = Math.min(speed / 70, 0.13);
+  pillEl.style.transform = `translateX(${pillX * 100}%) scale(${1 + stretch}, ${1 - stretch * 0.45})`;
+
+  if (Math.abs(pillX - pillTarget) < 0.0005 && speed < 0.01) {
+    pillX = pillTarget;
+    pillV = 0;
+    pillEl.style.transform = `translateX(${pillX * 100}%)`;
+    pillRaf = null;
+    return;
+  }
+  pillRaf = requestAnimationFrame(animatePill);
+}
+
 function setPill(pos, animate) {
-  pillEl.style.transition = animate ? '' : 'none';
-  pillEl.style.setProperty('--i', pos);
+  pillTarget = pos;
+  if (!animate) { // mise en place immédiate (redimensionnement)
+    pillX = pos;
+    pillV = 0;
+    pillEl.style.transform = `translateX(${pos * 100}%)`;
+    return;
+  }
+  if (!pillRaf) {
+    pillLastT = performance.now();
+    pillRaf = requestAnimationFrame(animatePill);
+  }
 }
 
 // Position (fractionnaire) de la bulle sous le doigt
@@ -550,14 +585,14 @@ navEl.addEventListener('pointerdown', (e) => {
   pillEl.classList.add('pressed');
   const pos = posFromX(e.clientX);
   dragIndex = Math.round(pos);
-  setPill(pos, false);
+  setPill(pos, true);
 });
 
 navEl.addEventListener('pointermove', (e) => {
   if (!dragging) return;
   const pos = posFromX(e.clientX);
   dragIndex = Math.round(pos);
-  setPill(pos, false);
+  setPill(pos, true);
 });
 
 function endDrag() {
